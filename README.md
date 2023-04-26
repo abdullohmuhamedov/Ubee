@@ -1,4 +1,4 @@
-https://dbdiagram.io/d/63ff2c96296d97641d849863
+![image](https://user-images.githubusercontent.com/125027253/234686115-2f254a38-1e50-474e-9280-b63d33889aba.png)
 
 Ubee application is a digital wallet that allows users to store, manage, and make transactions with their digital assets, such as cryptocurrencies, loyalty points, and gift cards. These applications often provide users with a user-friendly interface to manage their digital assets and enable quick and easy transactions.
 
