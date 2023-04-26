@@ -49,6 +49,3 @@ Contributions to Ubee are welcome and encouraged! To contribute, follow these st
 3. Make your changes.
 4. Submit a pull request.
 
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
