@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Ubee.Service.Exceptions;
 
-namespace Ubee.Service.Exceptions
+public class UbeeException : Exception
 {
-    internal class CustomException
+    public int Code { get; set; }
+    public UbeeException(int code, string message) : base(message)
     {
-    }
+        this.Code = code;
+    } 
 }
