@@ -1,6 +1,6 @@
 ﻿using Ubee.Domain.Entities;
 
-namespace Ubee.Service.DTOs;
+namespace Ubee.Service.DTOs.Users;
 
 public class UserForCreationDto
 {
