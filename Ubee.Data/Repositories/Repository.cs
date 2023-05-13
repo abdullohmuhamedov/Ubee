@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
 using Ubee.Data.Contexts;
 using Ubee.Data.IRepositories;
 using Ubee.Domain.Commons;
 
 namespace Ubee.Data.Repositories;
+#pragma warning disable
 
 public class Repository<TEntity> : IRepository<TEntity> where TEntity : Auditable
 {
@@ -16,38 +18,66 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Auditabl
         this.appDbContext = appDbContext;
         this.dbSet = dbSet;
     }
-    public ValueTask<bool> DeleteAsync(Expression<Func<TEntity, bool>> expression)
+    public async ValueTask<bool> DeleteAsync(Expression<Func<TEntity, bool>> expression)
     {
-        throw new NotImplementedException();
+        var entity = await this.SelectAsync(expression);
+
+        if(entity is null)
+        {
+            entity.IsDeleted = true;
+            return true;
+        }
+
+        return false;
     }
 
     public bool DeleteMany(Expression<Func<TEntity, bool>> expression)
     {
-        throw new NotImplementedException();
+        var entities = dbSet.Where(expression);
+        if(entities is null)
+        {
+            foreach (var entity in entities)
+                entity.IsDeleted = true;
+
+            return true;
+        }
+        return false;
     }
 
-    public ValueTask<TEntity> InsertAsync(TEntity entity)
+    public async ValueTask<TEntity> InsertAsync(TEntity entity)
     {
-        throw new NotImplementedException();
+        EntityEntry<TEntity> entry = await this.dbSet.AddAsync(entity);
+
+        return entry.Entity;
     }
 
-    public ValueTask SaveAsync()
+    public async ValueTask SaveAsync()
     {
-        throw new NotImplementedException();
+        appDbContext.SaveChangesAsync();
     }
 
     public IQueryable<TEntity> SelectAll(Expression<Func<TEntity, bool>> expression = null, string[] includes = null)
     {
-        throw new NotImplementedException();
+        IQueryable<TEntity> query = expression is null ? this.dbSet : this.dbSet.Where(expression);
+
+        if(includes is not null)
+        {
+            foreach (string include in includes)
+            {
+                query = query.Include(include);
+            }
+        }
+
+        return query;
     }
 
-    public ValueTask<TEntity> SelectAsync(Expression<Func<TEntity, bool>> expression, string[] includes = null)
+    public async ValueTask<TEntity> SelectAsync(Expression<Func<TEntity, bool>> expression, string[] includes = null)
+        => await this.SelectAll(expression, includes).FirstOrDefaultAsync();
+        
+    public TEntity Update(TEntity entity)
     {
-        throw new NotImplementedException();
-    }
+        EntityEntry<TEntity> entryentity = this.appDbContext.Update(entity);
 
-    public ValueTask<TEntity> UpdateAsync(TEntity entity)
-    {
-        throw new NotImplementedException();
+        return entryentity.Entity;
     }
 }
